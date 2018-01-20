@@ -17,6 +17,7 @@
 		FA704E9A200DAD96009D766B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA704E98200DAD96009D766B /* LaunchScreen.storyboard */; };
 		FA704EA5200DAD97009D766B /* access_collectiveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA704EA4200DAD97009D766B /* access_collectiveTests.swift */; };
 		FA704EB0200DAD97009D766B /* access_collectiveUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA704EAF200DAD97009D766B /* access_collectiveUITests.swift */; };
+		FA7C77CA20133BF500160F75 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA7C77C920133BF500160F75 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 		FA704EAB200DAD97009D766B /* access-collectiveUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "access-collectiveUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA704EAF200DAD97009D766B /* access_collectiveUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = access_collectiveUITests.swift; sourceTree = "<group>"; };
 		FA704EB1200DAD97009D766B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA7C77C920133BF500160F75 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,6 +144,7 @@
 				FA704E93200DAD96009D766B /* Main.storyboard */,
 				FA704E96200DAD96009D766B /* Assets.xcassets */,
 				FA704E98200DAD96009D766B /* LaunchScreen.storyboard */,
+				FA7C77C920133BF500160F75 /* GoogleService-Info.plist */,
 				FA704E9B200DAD96009D766B /* Info.plist */,
 			);
 			path = "access-collective";
@@ -281,6 +284,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA704E9A200DAD96009D766B /* LaunchScreen.storyboard in Resources */,
+				FA7C77CA20133BF500160F75 /* GoogleService-Info.plist in Resources */,
 				FA704E97200DAD96009D766B /* Assets.xcassets in Resources */,
 				FA704E95200DAD96009D766B /* Main.storyboard in Resources */,
 			);
