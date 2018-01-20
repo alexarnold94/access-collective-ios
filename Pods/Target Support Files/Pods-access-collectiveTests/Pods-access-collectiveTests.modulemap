@@ -1,0 +1,6 @@
+framework module Pods_access_collectiveTests {
+  umbrella header "Pods-access-collectiveTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
