@@ -26,7 +26,9 @@ You will need:
   `cd path/to/desired/location/`  
   `git clone https://github.com/alexarnold94/access-collective-ios.git`
 
-4. Open Xcode through Terminal  
+4. Grab the `GoogleService-Info.plist` file from a project contributor (available on the group Slack channel) and add it to the `access-collective` folder of the project
+
+5. Open Xcode through Terminal  
 
   `open access-collective.xcworkspace`
 
