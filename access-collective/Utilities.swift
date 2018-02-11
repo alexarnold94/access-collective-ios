@@ -177,4 +177,18 @@ class Utilities {
         }
         return 1
     }
+    
+    static func loadImage(layerImage: String) -> UIImage! {
+        let paths = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true)
+        let filePath = "file:\(paths[0])/\(layerImage)"
+        guard let fileUrl = URL(string: filePath) else { return nil }
+        
+        do {
+            let data = try Data(contentsOf: fileUrl)
+            return UIImage(data: data)!
+        } catch {
+            print("\n\nData error: \(error)\n\n")
+            return nil
+        }
+    }
 }

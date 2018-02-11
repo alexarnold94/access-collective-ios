@@ -45,6 +45,7 @@ class MapViewController: UIViewController {
                         if (marker.description != "") {
                             mapMarker.snippet = marker.description
                         }
+                        mapMarker.icon = Utilities.loadImage(layerImage: layer.image)
                         mapMarker.map = mapView
                     }
                 }
