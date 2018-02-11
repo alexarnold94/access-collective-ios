@@ -6,14 +6,38 @@
 //
 
 import UIKit
+import GoogleMaps
+import Firebase
 
 class MapViewController: UIViewController {
-
+    
+    var layers : [Layer] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Campus"
         
-        // Do any additional setup after loading the view.
+        DispatchQueue.global(qos: .background).async {
+            self.layers = Utilities.getLayers()
+            
+            DispatchQueue.main.sync {
+                // Do any additional setup after loading the view.
+                // Create a GMSCameraPosition that tells the map to display the
+                // coordinate -33.86,151.20 at zoom level 6.
+                let camera = GMSCameraPosition.camera(withLatitude: -31.980905, longitude: 115.818433, zoom: 19.0)
+                let mapView = GMSMapView.map(withFrame: CGRect.zero, camera: camera)
+                self.view = mapView
+                
+                // Creates a marker in the center of the map.
+                let marker = GMSMarker()
+                marker.position = CLLocationCoordinate2D(latitude: -31.979908, longitude: 115.818039)
+                marker.title = "Sydney"
+                marker.snippet = "Australia"
+                marker.map = mapView
+                
+                print("Layers: \(self.layers)")
+            }
+        }
     }
 
     override func didReceiveMemoryWarning() {

@@ -61,7 +61,7 @@
                                         <rect key="frame" x="116" y="405" width="144" height="30"/>
                                         <state key="normal" title="Get Current Location"/>
                                         <connections>
-                                            <segue destination="gO3-7r-rfQ" kind="show" id="GmW-Li-kb8"/>
+                                            <segue destination="gO3-7r-rfQ" kind="show" id="DoB-Ds-3Ti"/>
                                         </connections>
                                     </button>
                                 </subviews>

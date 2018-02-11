@@ -10,6 +10,7 @@ target 'access-collective' do
   pod 'Firebase/Database'
   pod 'Firebase/Auth'
   pod 'Firebase/Storage'
+  pod 'GoogleMaps'
 
   target 'access-collectiveTests' do
     inherit! :search_paths
