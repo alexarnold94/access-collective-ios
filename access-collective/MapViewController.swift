@@ -29,19 +29,34 @@ class MapViewController: UIViewController {
                 // Do any additional setup after loading the view.
                 // Create a GMSCameraPosition that tells the map to display the
                 // coordinate -33.86,151.20 at zoom level 6.
-                print("Creating map")
                 let camera = GMSCameraPosition.camera(withLatitude: -31.980905, longitude: 115.818433, zoom: 19.0)
                 let mapView = GMSMapView.map(withFrame: CGRect.zero, camera: camera)
                 self.view = mapView
                 
-                // Creates a marker in the center of the map.
-                let marker = GMSMarker()
-                marker.position = CLLocationCoordinate2D(latitude: -31.979908, longitude: 115.818039)
-                marker.title = "Sydney"
-                marker.snippet = "Australia"
-                marker.map = mapView
+                // Displays all markers on the map (currently all with the default marker)
+                for layer in self.layers {
+                    print("Creating markers for layer \(layer.name)")
+                    for marker in layer.markers {
+                        print("Creating marker \(marker.name) in layer \(layer.name)")
+                        let mapMarker = GMSMarker()
+                        print("Marker: latitude = \(marker.latitude), longitude = \(marker.longitude)")
+                        mapMarker.position = CLLocationCoordinate2D(latitude: marker.latitude, longitude: marker.longitude)
+                        mapMarker.title = marker.name
+                        if (marker.description != "") {
+                            mapMarker.snippet = marker.description
+                        }
+                        mapMarker.map = mapView
+                    }
+                }
                 
+                /* Debugging purposes - display all the Layers/Markers
                 print("Layers: \(self.layers)")
+                for layer in self.layers {
+                    print("Layer '\(layer.name)'")
+                    for marker in layer.markers {
+                        print("\tMarker: (\(marker.name), \(marker.description), \(marker.latitude), \(marker.longitude))")
+                    }
+                } */
             }
         }
     }

@@ -14,9 +14,9 @@ class Layer {
     let markers: [Marker]
     
     init(name: String, image: String, markers: [Marker]) {
-        self.name = ""
-        self.image = ""
-        self.markers = []
+        self.name = name
+        self.image = image
+        self.markers = markers
     }
 }
 
@@ -45,6 +45,7 @@ class Utilities {
         
         databaseRef.observe(.value) { snapshot in
             total = 2 * Int(snapshot.childrenCount)
+            print("Total = \(total)")
             for layer in snapshot.children {
                 print("Layer = \((layer as! DataSnapshot).key)")
                 var markers: [Marker] = []
@@ -58,32 +59,40 @@ class Utilities {
                             DispatchQueue.global(qos: .background).async {
                                 print("Getting image '\(image)' for layer: \((layer as! DataSnapshot).key)")
                                 count += Utilities.downloadImage(firebaseStoragePath: image)
+                                print("Image obtained!")
                             }
                         } else {
                             count += 1
                         }
-                    }
-                    
-                    var info: DataSnapshot
-                    var lat = 0.0
-                    var long = 0.0
-                    var desc = ""
-                    
-                    for data in (marker as! DataSnapshot).children {
-                        info = data as! DataSnapshot
-                        if (info.key == "latitude") {
-                            lat = info.value as! Double
-                        } else if (info.key == "longitude") {
-                            long = info.value as! Double
-                        } else if (info.key == "description") {
-                            desc = info.value as! String
+                    } else {
+                        var info: DataSnapshot
+                        var lat = 0.0
+                        var long = 0.0
+                        var desc = ""
+                        
+                        for data in (marker as! DataSnapshot).children {
+                            info = data as! DataSnapshot
+                            if (info.key == "latitude") {
+                                lat = info.value as! Double
+                                print("Got lat = \(lat) for marker = \((marker as! DataSnapshot).key)")
+                            } else if (info.key == "longitude") {
+                                long = info.value as! Double
+                                print("Got long = \(long) for marker = \((marker as! DataSnapshot).key)")
+                            } else if (info.key == "description") {
+                                desc = info.value as! String
+                                print("Got desc = \(lat) for marker = \((marker as! DataSnapshot).key)")
+                            }
                         }
+                        print("Creating a new Marker for marker = \((marker as! DataSnapshot).key)")
+                        markers.append(Marker(name: (marker as! DataSnapshot).key, description: desc, latitude: lat, longitude: long))
+                        print("Marker[\(markers.count-1)]: name = \(markers[markers.count-1].name), lat = \(markers[markers.count-1].latitude), long = \(markers[markers.count-1].longitude), desc = \(markers[markers.count-1].description)")
                     }
-                    print("Creating a new Marker for marker = \((marker as! DataSnapshot).key)")
-                    markers.append(Marker(name: (marker as! DataSnapshot).key, description: desc, latitude: lat, longitude: long))
                 }
                 print("Creating a new Layer for layer = \((layer as! DataSnapshot).key)")
                 layers.append(Layer(name: (layer as! DataSnapshot).key, image: image, markers: markers))
+                for marker in markers {
+                    print("Layer[\(layers.count - 1)]: Marker: name = \(marker.name), lat = \(marker.latitude), long = \(marker.longitude), desc = \(marker.description)")
+                }
                 count += 1
             }
         }
@@ -91,6 +100,7 @@ class Utilities {
             
         }
         print("Created all the layers for \(firebaseDatabasePath)")
+        print("layers[0].markers[0] = \(layers[0].markers[0])")
         return layers
     }
     
@@ -103,12 +113,17 @@ class Utilities {
         Storage.storage().reference().child(firebaseStoragePath).getMetadata { metadata, error in
             if let error = error {
                 print("Storage metadata error: \(error)")
+                completed = true
             } else {
                 // If the last time the image was updated in UserDefaults is older than Firebase, download the image
                 if ((metadata?.updated?.timeIntervalSince1970)! > locallyUpdated) {
                     let path = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true).first!
                     let filePath = "file://\(path)/\(firebaseStoragePath)"
-                    guard let fileUrl = URL(string: filePath) else { return }
+                    guard let fileUrl = URL(string: filePath) else {
+                        completed = true
+                        print("Error getting file URL!")
+                        return
+                    }
                     
                     let downloadTask = Storage.storage().reference().child(firebaseStoragePath).write(toFile: fileUrl)
                     downloadTask.observe(.resume) { snapshot in
@@ -119,15 +134,19 @@ class Utilities {
                     }
                     downloadTask.observe(.success) { snapshot in
                         print("Saved \(firebaseStoragePath)")
+                        UserDefaults.standard.set(metadata?.updated?.timeIntervalSince1970, forKey: firebaseStoragePath)
                         completed = true
                     }
                     downloadTask.observe(.failure) { snapshot in
                         guard let errorCode = (snapshot.error as NSError?)?.code else {
+                            completed = true
                             return
                         }
                         guard let error = StorageErrorCode(rawValue: errorCode) else {
+                            completed = true
                             return
                         }
+                        
                         switch (error) {
                         case .objectNotFound:
                             print("File doesn't exist")
@@ -147,6 +166,9 @@ class Utilities {
                         }
                         completed = true
                     }
+                } else {
+                    print("\(firebaseStoragePath) is already up to date!")
+                    completed = true
                 }
             }
         }
