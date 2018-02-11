@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="JaA-yM-dd4">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Ij2-Ko-ADE">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -11,20 +11,20 @@
     </dependencies>
     <scenes>
         <!--Navigation Controller-->
-        <scene sceneID="Wfn-Cx-eCC">
+        <scene sceneID="8Pk-Bx-vkG">
             <objects>
-                <navigationController id="JaA-yM-dd4" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="SPF-iA-d9x">
+                <navigationController id="Ij2-Ko-ADE" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Iox-eh-29I">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="cJd-EI-uRM" kind="relationship" relationship="rootViewController" id="oaU-Jg-fVh"/>
+                        <segue destination="gO3-7r-rfQ" kind="relationship" relationship="rootViewController" id="i1D-KW-Mxr"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="gem-ec-8b5" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pF2-fY-G2a" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-940" y="-258"/>
+            <point key="canvasLocation" x="46" y="79"/>
         </scene>
         <!--Welcome-->
         <scene sceneID="WYf-jQ-Hh1">
@@ -60,9 +60,6 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G6Y-ul-5IZ">
                                         <rect key="frame" x="116" y="405" width="144" height="30"/>
                                         <state key="normal" title="Get Current Location"/>
-                                        <connections>
-                                            <segue destination="gO3-7r-rfQ" kind="show" id="DoB-Ds-3Ti"/>
-                                        </connections>
                                     </button>
                                 </subviews>
                                 <constraints>
@@ -92,18 +89,37 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bnf-Nt-E4b" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-154.40000000000001" y="-259.52023988005999"/>
+            <point key="canvasLocation" x="1783" y="79"/>
         </scene>
-        <!--Map View Controller-->
+        <!--Access Collective-->
         <scene sceneID="BRu-Ty-p4d">
             <objects>
                 <viewController id="gO3-7r-rfQ" customClass="MapViewController" customModule="access_collective" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="uMv-aZ-A9E">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="DqY-WS-vAp">
+                                <rect key="frame" x="177" y="323" width="20" height="20"/>
+                            </activityIndicatorView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="DqY-WS-vAp" firstAttribute="centerX" secondItem="uMv-aZ-A9E" secondAttribute="centerX" id="2x5-WS-3sD"/>
+                            <constraint firstItem="DqY-WS-vAp" firstAttribute="centerY" secondItem="uMv-aZ-A9E" secondAttribute="centerY" id="fAK-Ke-tGU"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="j7N-PM-m03"/>
                     </view>
+                    <navigationItem key="navigationItem" title="Access Collective" id="Mvy-gH-jLt">
+                        <barButtonItem key="leftBarButtonItem" title="Menu" id="Lbc-ep-QwU">
+                            <connections>
+                                <segue destination="cJd-EI-uRM" kind="show" id="n96-Bd-BEj"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="progressIndicator" destination="DqY-WS-vAp" id="Zhx-02-19Q"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cOo-2Q-hkn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -135,7 +151,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fkx-Q3-Vop" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="934" y="-641"/>
+            <point key="canvasLocation" x="2604" y="79"/>
         </scene>
     </scenes>
 </document>

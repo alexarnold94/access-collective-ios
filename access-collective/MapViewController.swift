@@ -11,19 +11,25 @@ import Firebase
 
 class MapViewController: UIViewController {
     
+    @IBOutlet weak var progressIndicator: UIActivityIndicatorView!
     var layers : [Layer] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Campus"
+        self.progressIndicator.isHidden = false
+        self.progressIndicator.startAnimating()
         
         DispatchQueue.global(qos: .background).async {
-            self.layers = Utilities.getLayers()
+            self.layers = Utilities.getLayers(firebaseDatabasePath: "campusMarkersTest/UWA Crawley")
             
-            DispatchQueue.main.sync {
+            DispatchQueue.main.async {
+                self.progressIndicator.isHidden = true
+                
                 // Do any additional setup after loading the view.
                 // Create a GMSCameraPosition that tells the map to display the
                 // coordinate -33.86,151.20 at zoom level 6.
+                print("Creating map")
                 let camera = GMSCameraPosition.camera(withLatitude: -31.980905, longitude: 115.818433, zoom: 19.0)
                 let mapView = GMSMapView.map(withFrame: CGRect.zero, camera: camera)
                 self.view = mapView
