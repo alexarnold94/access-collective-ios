@@ -11,16 +11,16 @@ import Firebase
 class Layer {
     let name: String
     let image: String
-    let markers: [Marker]
+    let checkpoints: [Checkpoint]
     
-    init(name: String, image: String, markers: [Marker]) {
+    init(name: String, image: String, checkpoints: [Checkpoint]) {
         self.name = name
         self.image = image
-        self.markers = markers
+        self.checkpoints = checkpoints
     }
 }
 
-class Marker {
+class Checkpoint {
     let name: String
     let description: String
     let latitude: Double
@@ -34,27 +34,49 @@ class Marker {
     }
 }
 
+class Campus {
+    let campusName: String
+    let bottomLeftLat: Double
+    let bottomLeftLong: Double
+    let topRightLat: Double
+    let topRightLong: Double
+    let zoom: Double
+    let layers: [Layer]
+    
+    init(campusName: String, bottomLeftLat: Double, bottomLeftLong: Double, topRightLat: Double, topRightLong: Double, zoom: Double, layers: [Layer]) {
+        self.campusName = campusName
+        self.bottomLeftLat = bottomLeftLat
+        self.bottomLeftLong = bottomLeftLong
+        self.topRightLat = topRightLat
+        self.topRightLong = topRightLong
+        self.zoom = zoom
+        self.layers = layers
+    }
+}
+
 class Utilities {
     
-    static func getLayers(firebaseDatabasePath: String) -> [Layer] {
+    static func getCampus(forCampus campusName: String) -> Campus {
         print("Started getLayers()")
-        let databaseRef = Database.database().reference().child(firebaseDatabasePath)
+        var databaseRef = Database.database().reference().child("campusMarkersTest/\(campusName)")
         var count = 0
         var total = 1
+        var campus: Campus!
         var layers: [Layer] = []
         
         databaseRef.observe(.value) { snapshot in
             total = 2 * Int(snapshot.childrenCount)
             print("Total = \(total)")
+            
             for layer in snapshot.children {
                 print("Layer = \((layer as! DataSnapshot).key)")
-                var markers: [Marker] = []
+                var checkpoints: [Checkpoint] = []
                 var image = ""
                 
-                for marker in (layer as! DataSnapshot).children {
-                    print("Marker = \((marker as! DataSnapshot).key)")
-                    if ((marker as! DataSnapshot).key == "image") {
-                        image = (marker as! DataSnapshot).value as! String
+                for checkpoint in (layer as! DataSnapshot).children {
+                    print("Marker = \((checkpoint as! DataSnapshot).key)")
+                    if ((checkpoint as! DataSnapshot).key == "image") {
+                        image = (checkpoint as! DataSnapshot).value as! String
                         if (image != "") {
                             DispatchQueue.global(qos: .background).async {
                                 print("Getting image '\(image)' for layer: \((layer as! DataSnapshot).key)")
@@ -70,28 +92,28 @@ class Utilities {
                         var long = 0.0
                         var desc = ""
                         
-                        for data in (marker as! DataSnapshot).children {
+                        for data in (checkpoint as! DataSnapshot).children {
                             info = data as! DataSnapshot
                             if (info.key == "latitude") {
                                 lat = info.value as! Double
-                                print("Got lat = \(lat) for marker = \((marker as! DataSnapshot).key)")
+                                print("Got lat = \(lat) for marker = \((checkpoint as! DataSnapshot).key)")
                             } else if (info.key == "longitude") {
                                 long = info.value as! Double
-                                print("Got long = \(long) for marker = \((marker as! DataSnapshot).key)")
+                                print("Got long = \(long) for marker = \((checkpoint as! DataSnapshot).key)")
                             } else if (info.key == "description") {
                                 desc = info.value as! String
-                                print("Got desc = \(lat) for marker = \((marker as! DataSnapshot).key)")
+                                print("Got desc = \(lat) for marker = \((checkpoint as! DataSnapshot).key)")
                             }
                         }
-                        print("Creating a new Marker for marker = \((marker as! DataSnapshot).key)")
-                        markers.append(Marker(name: (marker as! DataSnapshot).key, description: desc, latitude: lat, longitude: long))
-                        print("Marker[\(markers.count-1)]: name = \(markers[markers.count-1].name), lat = \(markers[markers.count-1].latitude), long = \(markers[markers.count-1].longitude), desc = \(markers[markers.count-1].description)")
+                        print("Creating a new Marker for marker = \((checkpoint as! DataSnapshot).key)")
+                        checkpoints.append(Checkpoint(name: (checkpoint as! DataSnapshot).key, description: desc, latitude: lat, longitude: long))
+                        print("Marker[\(checkpoints.count-1)]: name = \(checkpoints[checkpoints.count-1].name), lat = \(checkpoints[checkpoints.count-1].latitude), long = \(checkpoints[checkpoints.count-1].longitude), desc = \(checkpoints[checkpoints.count-1].description)")
                     }
                 }
                 print("Creating a new Layer for layer = \((layer as! DataSnapshot).key)")
-                layers.append(Layer(name: (layer as! DataSnapshot).key, image: image, markers: markers))
-                for marker in markers {
-                    print("Layer[\(layers.count - 1)]: Marker: name = \(marker.name), lat = \(marker.latitude), long = \(marker.longitude), desc = \(marker.description)")
+                layers.append(Layer(name: (layer as! DataSnapshot).key, image: image, checkpoints: checkpoints))
+                for checkpoint in checkpoints {
+                    print("Layer[\(layers.count - 1)]: Checkpoint: name = \(checkpoint.name), lat = \(checkpoint.latitude), long = \(checkpoint.longitude), desc = \(checkpoint.description)")
                 }
                 count += 1
             }
@@ -99,9 +121,48 @@ class Utilities {
         while (count < total) {
             
         }
-        print("Created all the layers for \(firebaseDatabasePath)")
-        print("layers[0].markers[0] = \(layers[0].markers[0])")
-        return layers
+        
+        count = 0
+        databaseRef = Database.database().reference().child("campusBounds/\(campusName)")
+        databaseRef.observe(.value) { (snapshot) in
+            var bottomLeftLat = 0.0
+            var bottomLeftLong = 0.0
+            var topRightLat = 0.0
+            var topRightLong = 0.0
+            var zoom = 0.0
+            
+            for rawData in snapshot.children {
+                let data = rawData as! DataSnapshot
+                if data.key == "bottomLeftLat" {
+                    bottomLeftLat = data.value as! Double
+                }
+                if data.key == "bottomLeftLong" {
+                    bottomLeftLong = data.value as! Double
+                }
+                if data.key == "topRightLat" {
+                    topRightLat = data.value as! Double
+                }
+                if data.key == "topRightLong" {
+                    topRightLong = data.value as! Double
+                }
+                if data.key == "zoom" {
+                    zoom = data.value as! Double
+                }
+            }
+            
+            campus = Campus(campusName: snapshot.key, bottomLeftLat: bottomLeftLat, bottomLeftLong: bottomLeftLong, topRightLat: topRightLat, topRightLong: topRightLong, zoom: zoom, layers: layers)
+            
+            print("Campus = \(campus)")
+            count = total
+        }
+        
+        while count < total {
+            
+        }
+        
+        print("Created all the layers for \(campusName)")
+        print("campus.layers[0].checkpoints[0] = \(campus.layers[0].checkpoints[0])")
+        return campus
     }
     
     static func downloadImage(firebaseStoragePath: String) -> Int {

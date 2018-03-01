@@ -12,7 +12,7 @@ import Firebase
 class MapViewController: UIViewController {
     
     @IBOutlet weak var progressIndicator: UIActivityIndicatorView!
-    var layers : [Layer] = []
+    var campus: Campus!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,7 +21,7 @@ class MapViewController: UIViewController {
         self.progressIndicator.startAnimating()
         
         DispatchQueue.global(qos: .background).async {
-            self.layers = Utilities.getLayers(firebaseDatabasePath: "campusMarkersTest/UWA Crawley")
+            self.campus = Utilities.getCampus(forCampus: "UWA Crawley")
             
             DispatchQueue.main.async {
                 self.progressIndicator.isHidden = true
@@ -34,16 +34,16 @@ class MapViewController: UIViewController {
                 self.view = mapView
                 
                 // Displays all markers on the map (currently all with the default marker)
-                for layer in self.layers {
+                for layer in self.campus.layers {
                     print("Creating markers for layer \(layer.name)")
-                    for marker in layer.markers {
-                        print("Creating marker \(marker.name) in layer \(layer.name)")
+                    for checkpoint in layer.checkpoints {
+                        print("Creating checkpoint \(checkpoint.name) in layer \(layer.name)")
                         let mapMarker = GMSMarker()
-                        print("Marker: latitude = \(marker.latitude), longitude = \(marker.longitude)")
-                        mapMarker.position = CLLocationCoordinate2D(latitude: marker.latitude, longitude: marker.longitude)
-                        mapMarker.title = marker.name
-                        if (marker.description != "") {
-                            mapMarker.snippet = marker.description
+                        print("Checkpoint: latitude = \(checkpoint.latitude), longitude = \(checkpoint.longitude)")
+                        mapMarker.position = CLLocationCoordinate2D(latitude: checkpoint.latitude, longitude: checkpoint.longitude)
+                        mapMarker.title = checkpoint.name
+                        if (checkpoint.description != "") {
+                            mapMarker.snippet = checkpoint.description
                         }
                         mapMarker.icon = Utilities.loadImage(layerImage: layer.image)
                         mapMarker.map = mapView
